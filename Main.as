@@ -26,9 +26,9 @@ simple setup file for touchscreens.
 			import com.greensock.loading.display.*;
 		import flash.geom.*; 
 		import flash.text.Font;
-		import com.greensock.plugins.TintPlugin;
+
 		import com.greensock.plugins.TweenPlugin;
-		TweenPlugin.activate([TintPlugin]);
+
 		import flash.errors.IOError;
 
 		import flash.events.IOErrorEvent;
@@ -46,7 +46,7 @@ simple setup file for touchscreens.
 	public class Main extends Sprite
 	{
 		
-		private var _iPhoneScroll : IPhoneScroll;
+	private var _iPhoneScroll : IPhoneScroll;
 
 	var camPixRegex:RegExp = /bilder\/(\d+)\.jpg/i;
 
@@ -67,7 +67,7 @@ simple setup file for touchscreens.
 	var contestSelecterBg:SelecterBg = new SelecterBg();
 	var contestSelecterBullet:Array = new Array();
 	var contestMain:Sprite = new Sprite;
-	var bigPic:ImageLoader;
+
 	
 	var flyerLoaders:Array = new Array();
 	
@@ -77,21 +77,8 @@ simple setup file for touchscreens.
 	var camPic:ImageLoader;
 	var camPicTal:ImageLoader;
 	
-	//var camContainer:Sprite = new Sprite();
-	var parkPic;
 	var posLoaded = false;
-	var contestXMLLoaded = false;
 	
-	var houry:String;
-	var monthy:String;
-	var yeary:String;
-	var datey:String;
-	var montheer:Number;
-
-	var minutey:String;
-	var dateer:Number;
-	var minuteer:Number;
-	var houreer:Number;
 	var urly:String;
 	
 	var viewNum:Number;
@@ -107,7 +94,7 @@ simple setup file for touchscreens.
 	
 	var camView:CamView = new CamView;
 	var contestView:Sprite = new Sprite;
-	var closer = new MediaClose();
+	
 	
 	
 	var dropShadow:DropShadowFilter; 
@@ -125,7 +112,7 @@ simple setup file for touchscreens.
 			this.addEventListener(Event.ADDED_TO_STAGE, on_added_to_stage);
 			Multitouch.inputMode = MultitouchInputMode.GESTURE;
 			
-			dropShadow =  new DropShadowFilter();
+			
 			
 			// just for testing purposes
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, detectKey);
@@ -145,7 +132,7 @@ simple setup file for touchscreens.
 			info.alpha = 0;
 			
 			infoW.visible = false;
-			//contest.visible = false;
+		
 			
 			parkSetup.visible = false;
 			
@@ -164,10 +151,7 @@ simple setup file for touchscreens.
 			
 			
 			
-			dropShadow.color =  0x000000;
-			dropShadow.strength =  .5;
-			dropShadow.quality =  100;
-		
+	
 			
 			
 			camView.camPicSelecter.camSelecterBtn2.alpha = .5;
@@ -215,6 +199,10 @@ simple setup file for touchscreens.
 				xmlLoaderContests.load(new URLRequest(dataUrlContests));
 			showCam();
 			setChildIndex(bg,0);
+			dropShadow =  new DropShadowFilter();
+			dropShadow.color =  0x000000;
+			dropShadow.strength =  .5;
+			dropShadow.quality =  100;
 			
 		}
 		
@@ -238,7 +226,7 @@ simple setup file for touchscreens.
 		public function LoadXMLContests(e:Event):void { 
 			xmlDataContests = new XML(e.target.data); 
 			trace("XML YO! YO! Contests Loaded! ");
-			contestXMLLoaded = true;
+			
 			createContestWindows();
 			
 		}
