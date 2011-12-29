@@ -77,7 +77,7 @@ simple setup file for touchscreens.
 	var camPic:ImageLoader;
 	var camPicTal:ImageLoader;
 	
-	var camContainer:Sprite = new Sprite();
+	//var camContainer:Sprite = new Sprite();
 	var parkPic;
 	var posLoaded = false;
 	var contestXMLLoaded = false;
@@ -101,6 +101,9 @@ simple setup file for touchscreens.
 	var liveURLTal:String = "http://www.livecams.flumserberg.ch/mobotix-prodalp/live.php";
 	var camURLBerg:String = "http://www.livecams.flumserberg.ch/mobotix-prodcam2/bilder/";
 	var camURLTal:String = "http://www.livecams.flumserberg.ch/mobotix-prodalp/bilder/";
+	
+	var loaderlyBerg:Loaderly = new Loaderly();
+	var loaderlyTal:Loaderly = new Loaderly();
 	
 	var camView:CamView = new CamView;
 	var contestView:Sprite = new Sprite;
@@ -127,9 +130,7 @@ simple setup file for touchscreens.
 			// just for testing purposes
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, detectKey);
 			addChild(camView);
-			camView.addChild(camContainer);
-			camContainer.width = 1920;
-			camContainer.height = 640;
+	
 			setChildIndex(camView,0);
 			infoW.linkbg.addEventListener(MouseEvent.CLICK, showWebsite);
 			infoW.dev.addEventListener(MouseEvent.CLICK, showDev);
@@ -145,7 +146,7 @@ simple setup file for touchscreens.
 			
 			infoW.visible = false;
 			//contest.visible = false;
-			loaderly.visible = false;
+			
 			parkSetup.visible = false;
 			
 			
@@ -156,6 +157,7 @@ simple setup file for touchscreens.
 			camView.visible = false;
 			camView.addEventListener(TransformGestureEvent.GESTURE_SWIPE , onSwipe);
 			contestView.addEventListener(TransformGestureEvent.GESTURE_SWIPE , onSwipeContest);
+			contestMain.addEventListener(TransformGestureEvent.GESTURE_SWIPE , onSwipeContest);
 			
 			setChildIndex(bg,0);
 			
@@ -300,18 +302,28 @@ simple setup file for touchscreens.
 			}
 			
 			if(cam1Loaded&&cam2Loaded){
-					camContainer.setChildIndex(camPic.content,0);
+					camView.camContainer.setChildIndex(camPic.content,0);
 					camPic.content.visible = true;
-					camContainer.setChildIndex(camPicTal.content,0);
+					camView.camContainer.setChildIndex(camPicTal.content,0);
 					camPicTal.content.visible = true;
 			}
 			setChildIndex(bg,0);
 		}
 		
 	public function loadCamBerg(){
-				
-		loaderly.loadingTF.text = "connecting to webcams...";
-		loaderly.visible = true;
+			
+		camView.camContainer.addChild(loaderlyBerg);
+		loaderlyBerg.x = 480;
+		loaderlyBerg.y = 230;
+		loaderlyBerg.loadingTF.text = "Connecting to webcam Prodkamm...";
+		loaderlyBerg.visible = true;
+		
+		
+		camView.camContainer.addChild(loaderlyTal);
+		loaderlyTal.x = 1440;
+		loaderlyTal.y = 230;
+		loaderlyTal.loadingTF.text = "Connecting to webcam Prodalp...";
+		loaderlyTal.visible = true;
 		
 		// also for cam Tal
 		
@@ -333,8 +345,10 @@ simple setup file for touchscreens.
 	}	
 	
 	public function loadCamTal(){
-		camContainer.setChildIndex(camPic.content,0);
+		camView.camContainer.setChildIndex(camPic.content,0);
 		camPic.content.visible = true;
+		
+		
 		
 		livePHP = new DataLoader(liveURLTal, {format: "text", onComplete: livePHPCompleteTal});
 		livePHP.load();
@@ -355,7 +369,7 @@ simple setup file for touchscreens.
 			}
 		
 		urly = camURLBerg+timestamp+".jpg";	
-		camPic = new ImageLoader(urly,{alpha:1, x:0, y: -220, width:960, height: 720,onComplete: imgComplete, onError:errorHandler, alternateURL:"noCamProdkamm.png", onProgress:showLoading});
+		camPic = new ImageLoader(urly,{alpha:1, x:0, y: -220, width:960, height: 720,onComplete: imgComplete, onError:errorHandler, alternateURL:"noCamProdkamm.png", onProgress:showLoadingBerg});
 		camPic.load();
 		setChildIndex(bg,0);
 	}
@@ -373,7 +387,7 @@ simple setup file for touchscreens.
 		}
 		
 		urly = camURLTal+timestamp+".jpg";		
-		camPicTal = new ImageLoader(urly,{alpha:1, x:960, y: -14, width:960, height: 720, onComplete: imgTalComplete, onError:errorHandler, alternateURL:"noCamProdalp.png", onProgress:showLoading});
+		camPicTal = new ImageLoader(urly,{alpha:1, x:960, y: -14, width:960, height: 720, onComplete: imgTalComplete, onError:errorHandler, alternateURL:"noCamProdalp.png", onProgress:showLoadingTal});
 		camPicTal.load();
 		setChildIndex(bg,0);
 	}
@@ -382,11 +396,11 @@ simple setup file for touchscreens.
 	public function imgComplete(i){
 	trace("Berg loaded");
 	cam1Loaded = true;
-	loaderly.visible = false;
-	camContainer.addChild(camPic.content);
+	loaderlyBerg.visible = false;
+	camView.camContainer.addChild(camPic.content);
 	//camContainer.setChildIndex(camPic.content,0);
 	
-	
+	camView.camContainer.removeChild(loaderlyBerg);
 	if(viewNum != 1){	
 	camPic.content.visible = false;
 	}
@@ -400,15 +414,16 @@ simple setup file for touchscreens.
 	trace("loaded Tal");
 	cam2Loaded = true;
 	
-	camView.noCam.visible = false;
-	camContainer.addChild(camPicTal.content);
-	//camContainer.setChildIndex(camPicTal.content,0);
-		camView.setChildIndex(camContainer,0);
+		camView.camContainer.removeChild(loaderlyTal);
+		camView.camContainer.addChild(camPicTal.content);
+		noCam.visible = false;
 	if(viewNum != 1){
 	
 	camPicTal.content.visible = false;
 	
 	}
+	
+//	bg.alpha = 0;
 	setChildIndex(bg,0);
 	}
 	
@@ -426,27 +441,25 @@ simple setup file for touchscreens.
 	
 	
 	function onSwipe (e:TransformGestureEvent):void{
-		if(cam1Loaded){
+		
 		if (e.offsetX == 1) { 
 		 //User swiped towards right
 		camView.camPicSelecter.camSelecterBtn2.alpha = .5;
 		 camView.camPicSelecter.camSelecterBtn.alpha = 1;
-		 TweenLite.to(camPic.content,.3, {x: 0});
-		 TweenLite.to(camPicTal.content,.3, {x: 960});
-		 TweenLite.to(noCam,.3, {x: 1440});
+		TweenLite.to(camView.camContainer,.3, {x: 0});
+
 		setChildIndex(bg,0);
 		 }
 		if (e.offsetX == -1) { 
 		 //User swiped towards left
 		camView.camPicSelecter.camSelecterBtn2.alpha = 1;
 		 camView.camPicSelecter.camSelecterBtn.alpha = .5;
-		 TweenLite.to(camPic.content,.3, {x: -960});
-		 TweenLite.to(camPicTal.content,.3, {x: 0});
-		 TweenLite.to(noCam,.3, {x: 480});
+		TweenLite.to(camView.camContainer,.3, {x: -960});
+
 		setChildIndex(bg,0);
 		 }
 		}
-	 }
+	 
 	
 	
 	
@@ -458,30 +471,28 @@ simple setup file for touchscreens.
 	public function showPark(e:Event=null){
 		
 		viewNum = 0;
-		xmlLoader.addEventListener(Event.COMPLETE, LoadXML); 
-		xmlLoader.load(new URLRequest(dataUrl));
+	//	xmlLoader.addEventListener(Event.COMPLETE, LoadXML); 
+	//	xmlLoader.load(new URLRequest(dataUrl));
 		
-		
+		parkSetup.visible = true;
 		contestMain.visible = false;
 		camView.visible = false;
-		loaderly.visible = false;
+		
 		cam.alpha = 0;
 		park.alpha = 1;
 		contestbtn.alpha = 0;
-		info.alpha = 0;		
+		info.alpha = 0;	
+			
 		infoW.visible = false;
-		camPic.content.visible = false;
-	//	contest.visible = false;
+//		camPic.content.visible = false;
+
 		
 		if(posLoaded){
 		setPositions();
-		loaderly.visible = false;
-		parkSetup.visible = true;
+		
 		setChildIndex(parkSetup,0);
 	
 		}else{
-		loaderly.loadingTF.text = "Loading Park Status";
-		loaderly.visible = true;
 		showPark(null);
 		}
 	
@@ -493,7 +504,7 @@ simple setup file for touchscreens.
 		contestMain.visible = true;
 		viewNum = 2;
 		camView.visible = false;
-		loaderly.visible = false;
+		//loaderly.visible = false;
 		cam.alpha = 0;
 		park.alpha = 0;
 		contestbtn.alpha = 1;
@@ -518,8 +529,9 @@ simple setup file for touchscreens.
 			
 			flyerLoaders[i] = new Loaderly();
 			contests[i].addChild(flyerLoaders[i]);
+		
 			flyerLoaders[i].loadingTF.text = "Connecting to server..."
-			flyerLoaders[i].x = 105;
+			flyerLoaders[i].x = 200;
 			flyerLoaders[i].y = 200;
 			
 				
@@ -682,22 +694,19 @@ simple setup file for touchscreens.
 	
 	
 	public function showInfo(e:Event){
-		if(netz){
-			noNet.visible = false;
-			
-		}
+
 		viewNum = 3;
 		contestMain.visible = false;
 		camView.visible = false;
-		loaderly.visible = false;
+		//loaderly.visible = false;
 		cam.alpha = 0;
 		park.alpha = 0;
 		contestbtn.alpha = 0;
 		info.alpha = 1;
 		
 		infoW.visible = true;
-		camPic.content.visible = false;
-//contest.visible = false;
+	
+
 		parkSetup.visible = false;
 		setChildIndex(bg,0);
 		
@@ -729,9 +738,17 @@ simple setup file for touchscreens.
 		
 	}
 	
-	public function showLoading(e:LoaderEvent){
+	public function showLoadingBerg(e:LoaderEvent){
 	//	loaderly.visible = true;
-		loaderly.loadingTF.text = "Loading, "+Math.round(e.target.progress*100)+"% finished.";
+		loaderlyBerg.loadingTF.text = "Loading, "+Math.round(e.target.progress*100)+"% finished.";
+	
+		
+		
+	}
+	
+	public function showLoadingTal(e:LoaderEvent){
+	//	loaderly.visible = true;
+		loaderlyTal.loadingTF.text = "Loading, "+Math.round(e.target.progress*100)+"% finished.";
 	
 		
 		
