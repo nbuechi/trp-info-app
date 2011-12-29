@@ -67,6 +67,7 @@ simple setup file for touchscreens.
 	var contestSelecterBg:SelecterBg = new SelecterBg();
 	var contestSelecterBullet:Array = new Array();
 	var contestMain:Sprite = new Sprite;
+	var contestView:Sprite = new Sprite;
 
 	
 	var flyerLoaders:Array = new Array();
@@ -93,7 +94,7 @@ simple setup file for touchscreens.
 	var loaderlyTal:Loaderly = new Loaderly();
 	
 	var camView:CamView = new CamView;
-	var contestView:Sprite = new Sprite;
+	
 	
 	
 	
@@ -143,8 +144,8 @@ simple setup file for touchscreens.
 			contestMain.addChild(contestView);
 			camView.visible = false;
 			camView.addEventListener(TransformGestureEvent.GESTURE_SWIPE , onSwipe);
-			contestView.addEventListener(TransformGestureEvent.GESTURE_SWIPE , onSwipeContest);
 			contestMain.addEventListener(TransformGestureEvent.GESTURE_SWIPE , onSwipeContest);
+			contestView.addEventListener(MouseEvent.CLICK, testit);
 			
 			setChildIndex(bg,0);
 			
@@ -157,6 +158,11 @@ simple setup file for touchscreens.
 			camView.camPicSelecter.camSelecterBtn2.alpha = .5;
 			 camView.camPicSelecter.camSelecterBtn.alpha = 1;
 
+		}
+		
+		public function testit(e:MouseEvent){
+			
+			trace("contestMain clicked");
 		}
 		
 		
@@ -192,6 +198,7 @@ simple setup file for touchscreens.
 		
 		public function startApp(e:LoaderEvent){
 			netz = true;
+			
 				xmlLoader.addEventListener(Event.COMPLETE, LoadXML); 
 				xmlLoader.load(new URLRequest(dataUrl));
 
@@ -241,7 +248,7 @@ simple setup file for touchscreens.
 		
 		
 		public function setPositions(){
-			//catcher.addEventListener(MouseEvent.CLICK, openBigger);
+		
 			
 			
 				for(var i = 0; i < xmlData.spot.length(); i++){
@@ -491,7 +498,7 @@ simple setup file for touchscreens.
 		info.alpha = 0;	
 			
 		infoW.visible = false;
-//		camPic.content.visible = false;
+
 
 		
 		if(posLoaded){
@@ -514,7 +521,7 @@ simple setup file for touchscreens.
 		contestMain.visible = true;
 		viewNum = 2;
 		camView.visible = false;
-		//loaderly.visible = false;
+		
 		cam.alpha = 0;
 		park.alpha = 0;
 		contestbtn.alpha = 1;
@@ -560,6 +567,8 @@ simple setup file for touchscreens.
 			createBullets(xmlDataContests.contest.length());
 			setChildIndex(contestMain,0);
 			setChildIndex(bg,0);
+			
+			trace(contestMain.height + "contestmain "+ contestView.height + "contestView")
 	}
 	
 
@@ -569,12 +578,20 @@ simple setup file for touchscreens.
 		trace(faktor);
 		e.target.content.scaleX = faktor;
 		e.target.content.scaleY = faktor;
+		for(var i = 0; i <contestsFlyer.length; i++){
+			if(contestsFlyer[i] == e.target){
+			var actSel:Number = i;
+		}
+	}
+	
+		flyerLoaders[actSel].visible = false;
 	
 	}
 	
 
 	
 	public function bigPicture(e:Event){
+		hideMenuBar();
 		 for(var i = 0; i <contestsFlyer.length; i++){
 			if(contestsFlyer[i].content == e.currentTarget){
 			var actSel:Number = i;
@@ -612,6 +629,7 @@ simple setup file for touchscreens.
 	
 	public function killBigPicture(e:Event){
 	//	setChildIndex(contestMain,0);
+		showMenuBar();
 		setChildIndex(bg,0);
 	
 			 for(var i = 0; i <contestsFlyer.length; i++){
@@ -671,7 +689,8 @@ simple setup file for touchscreens.
 	
 	
 		function onSwipeContest (e:TransformGestureEvent):void{
-			killBigPicture(e);
+			
+		
 				if (e.offsetX == 1) { 
 					//User swiped towards right
 					if(contestView.x<0 ){
@@ -684,6 +703,7 @@ simple setup file for touchscreens.
 					//User swiped towards left
 					if( contestView.x > -(960 *(xmlDataContests.contest.length()-1))  ){
 						swiper +=1;
+					
 					TweenLite.to(contestView,.3,{x:contestView.x -960, onComplete:finiContestSwipe})
 					killBigPicture(e);
 				}
@@ -778,7 +798,25 @@ simple setup file for touchscreens.
 		flyerLoaders[actSel].loadingTF.text"Loading, "+Math.round(e.target.progress*100)+"% finished.";
 	
 	}
+	
+	
+	public function showMenuBar(){
+			cam.visible = true;
+			park.visible = true;
+			contestbtn.visible = true;
+			info.visible = true;
+			menuBar.visible = true;
+		
+	}
 
+	public function hideMenuBar(){
+			cam.visible = false;
+			park.visible = false;
+			contestbtn.visible = false;
+			info.visible = false;
+			menuBar.visible = false;
+		
+	}
 
 
 ////// the end
