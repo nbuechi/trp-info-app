@@ -3,10 +3,13 @@
     <id>TheRealPark</id>
     <versionNumber>1.0</versionNumber>
     <filename>trp_info</filename>
-    <description></description>
+    <description>
+        <text xml:lang="en">The official app for "The Real Park" in the Flumserberg ski resort in Switzerland. With the app, you'll get the top mountain and the valley webcam, a current status of the snowpark's setup and on the go event infos. Also you'll find all important telephone numbers for the Flumserberg.</text>
+        <text xml:lang="de">Die offizielle App des Snowparks "The Real Park" des Skigebietes Flumserberg in der Schweiz. Mit der App bist du laufend über die Wetterbedingungen im Park, über die Wartezeiten am Lift, über das aktuelle Parksetup und die Event Infos informiert. Und zusätzlich sind alle wichtigen Telefon-Nummern des Flumserbergs direkt integriert.</text>
+    </description>
     <!-- To localize the description, use the following format for the description element.
 	<description>
-		<text xml:lang="en">English App description goes here</text>
+		<text xml:lang="en">The official app for "The Real Park" in the Flumserberg ski Resort. With the app, you'll get the top mountain and the valley webcam, a current status of the snowpark's setup and on the go event infos. Also you'll find all important telephone numbers for the Flumserberg.</text>
 		<text xml:lang="fr">French App description goes here</text>
 		<text xml:lang="ja">Japanese App description goes here</text>
 	</description>
@@ -40,6 +43,6 @@
     </icon>
     <iPhone>
         <requestedDisplayResolution>high</requestedDisplayResolution>
-        <InfoAdditions><![CDATA[<key>UIDeviceFamily</key><array><string>1</string></array><key>UIApplicationExitsOnSuspend</key><true/>]]></InfoAdditions>
+        <InfoAdditions><![CDATA[<key>UIDeviceFamily</key><array><string>1</string></array><key>UIApplicationExitsOnSuspend</key><true/><key>UIStatusBarStyle</key><string>UIStatusBarStyleBlackOpaque</string><key>UIRequiresPersistentWiFi</key><string>NO</string>]]></InfoAdditions>
     </iPhone>
 </application>
