@@ -197,6 +197,7 @@ simple setup file for touchscreens.
 
 				xmlLoaderContests.addEventListener(Event.COMPLETE, LoadXMLContests); 
 				xmlLoaderContests.load(new URLRequest(dataUrlContests));
+				loadingData.visible = false;
 			showCam();
 			setChildIndex(bg,0);
 			dropShadow =  new DropShadowFilter();
@@ -209,7 +210,14 @@ simple setup file for touchscreens.
 		public function noNetwork(e:LoaderEvent){
 			netz =false;
 			noNet = new NoNetwork();
+		
+			loadingData.visible = false;
 			addChild(noNet);
+	
+				dropShadow =  new DropShadowFilter();
+				dropShadow.color =  0x000000;
+				dropShadow.strength =  .5;
+				dropShadow.quality =  100;
 			noNet.filters = new Array(dropShadow);
 			noNet.x = 480 - (noNet.width/2);
 			noNet.y = 70;
@@ -270,6 +278,7 @@ simple setup file for touchscreens.
 		
 		
 		public function showCam(e:Event=null){
+			
 			viewNum = 1;
 			camView.visible = true;
 			setChildIndex(camView,0);
@@ -281,6 +290,13 @@ simple setup file for touchscreens.
 			park.alpha = 0;
 			contestbtn.alpha = 0;
 			info.alpha = 0;	
+			
+			
+			if(!netz){
+				noNet.visible = true;
+				return;
+			}
+			
 			
 			if(!cam1Loaded){
 			loadCamBerg();
@@ -458,6 +474,9 @@ simple setup file for touchscreens.
 	
 	public function showPark(e:Event=null){
 		
+		if(!netz){
+			noNet.visible = false;
+		}
 		viewNum = 0;
 	//	xmlLoader.addEventListener(Event.COMPLETE, LoadXML); 
 	//	xmlLoader.load(new URLRequest(dataUrl));
@@ -478,17 +497,20 @@ simple setup file for touchscreens.
 		if(posLoaded){
 		setPositions();
 		
-		setChildIndex(parkSetup,0);
+		
 	
 		}else{
-		showPark(null);
+			parkSetup.updateField.text = "Sorry, no current data"
 		}
-	
+	setChildIndex(parkSetup,0);
 	setChildIndex(bg,0);
 	}
 
 
 	public function showEvents(e:Event){
+			if(!netz){
+				noNet.visible = true;
+			}
 		contestMain.visible = true;
 		viewNum = 2;
 		camView.visible = false;
@@ -611,7 +633,7 @@ simple setup file for touchscreens.
 			setChildIndex(bg,0);
 			
 			trace("bigPic killed");
-	contestsFlyer[actSel].content.removeEventListener(MouseEvent.CLICK, killBigPicture);
+		contestsFlyer[actSel].content.removeEventListener(MouseEvent.CLICK, killBigPicture);
 		contestsFlyer[actSel].content.addEventListener(MouseEvent.CLICK, bigPicture);
 	}
 	
@@ -683,6 +705,9 @@ simple setup file for touchscreens.
 	
 	public function showInfo(e:Event){
 
+			if(!netz){
+				noNet.visible = false;
+			}
 		viewNum = 3;
 		contestMain.visible = false;
 		camView.visible = false;
@@ -743,6 +768,7 @@ simple setup file for touchscreens.
 	}
 	
 	public function onProgressFlyer(e:LoaderEvent){
+		
 		for(var i = 0; i <contestsFlyer.length; i++){
 			if(contestsFlyer[i] == e.target){
 			var actSel:Number = i;
